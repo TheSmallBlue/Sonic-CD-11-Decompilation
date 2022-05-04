@@ -1,16 +1,10 @@
 #ifndef DRAWING_H
 #define DRAWING_H
 
-#define SPRITESHEETS_MAX (16)
-#define SURFACE_MAX      (24)
-#define GFXDATA_MAX      (0x400000)
+#define SURFACE_MAX (24)
+#define GFXDATA_MAX (0x800 * 0x800)
 
-#define BLENDTABLE_YSIZE (0x100)
-#define BLENDTABLE_XSIZE (0x20)
-#define BLENDTABLE_SIZE  (BLENDTABLE_XSIZE * BLENDTABLE_YSIZE)
-#define TINTTABLE_SIZE   (0x1000)
-
-#define DRAWLAYER_COUNT (0x7)
+#define DRAWLAYER_COUNT (7)
 
 enum FlipFlags { FLIP_NONE, FLIP_X, FLIP_Y, FLIP_XY };
 enum InkFlags { INK_NONE, INK_BLEND, INK_ALPHA, INK_ADD, INK_SUB };
@@ -25,28 +19,22 @@ struct GFXSurface {
     char fileName[0x40];
     int height;
     int width;
-#if RETRO_SOFTWARE_RENDER
     int widthShifted;
-#endif
-#if RETRO_HARDWARE_RENDER
     int texStartX;
     int texStartY;
-#endif
     int dataPosition;
 };
 
-extern short blendLookupTable[BLENDTABLE_SIZE];
-extern short subtractLookupTable[BLENDTABLE_SIZE];
-extern short tintLookupTable[TINTTABLE_SIZE];
+extern ushort blendLookupTable[0x100 * 0x20];
+extern ushort subtractLookupTable[0x100 * 0x20];
+extern ushort tintLookupTable[0x10000];
 
 extern int SCREEN_XSIZE;
 extern int SCREEN_CENTERX;
+extern int SCREEN_XSIZE_CONFIG;
 
 extern int touchWidth;
 extern int touchHeight;
-
-extern float videoAR;
-extern bool videoPlaying;
 
 extern DrawListEntry drawListEntries[DRAWLAYER_COUNT];
 
@@ -54,15 +42,18 @@ extern int gfxDataPosition;
 extern GFXSurface gfxSurface[SURFACE_MAX];
 extern byte graphicData[GFXDATA_MAX];
 
-#if RETRO_HARDWARE_RENDER
-#define INDEX_LIMIT      (0xC000)
-#define VERTEX_LIMIT     (0x2000)
-#define VERTEX3D_LIMIT   (0x1904)
-#define TEXBUFFER_SIZE   (0x100000)
-#define TILEUV_SIZE      (0x1000)
-#define TEXTURE_LIMIT    (6)
-#define TEXTURE_DATASIZE (1024 * 1024 * 2)
-#define TEXTURE_SIZE     (1024)
+#if RETRO_USE_ORIGINAL_CODE
+#define VERTEX_LIMIT (0x2000)
+#else
+#define VERTEX_LIMIT (0x4000) // doubled so debug overlays & etc work
+#endif
+#define INDEX_LIMIT         (VERTEX_LIMIT * 6)
+#define VERTEX3D_LIMIT      (0x1904)
+#define TILEUV_SIZE         (0x1000)
+#define HW_TEXTURE_LIMIT    (6)
+#define HW_TEXTURE_SIZE     (0x400)
+#define HW_TEXTURE_DATASIZE (HW_TEXTURE_SIZE * HW_TEXTURE_SIZE * 2)
+#define HW_TEXBUFFER_SIZE   (HW_TEXTURE_SIZE * HW_TEXTURE_SIZE)
 
 struct DrawVertex {
     short x;
@@ -94,7 +85,7 @@ extern DrawVertex3D polyList3D[VERTEX3D_LIMIT];
 
 extern ushort vertexSize3D;
 extern ushort indexSize3D;
-extern float tileUVArray[TILEUV_SIZE];
+extern ushort tileUVArray[TILEUV_SIZE];
 extern float floor3DXPos;
 extern float floor3DYPos;
 extern float floor3DZPos;
@@ -102,10 +93,12 @@ extern float floor3DAngle;
 extern bool render3DEnabled;
 extern bool hq3DFloorEnabled;
 
-extern ushort texBuffer[TEXBUFFER_SIZE];
+extern ushort texBuffer[HW_TEXBUFFER_SIZE];
 extern byte texBufferMode;
 
-extern int orthWidth;
+#if !RETRO_USE_ORIGINAL_CODE
+extern int viewOffsetX;
+#endif
 extern int viewWidth;
 extern int viewHeight;
 extern float viewAspect;
@@ -115,21 +108,33 @@ extern int virtualX;
 extern int virtualY;
 extern int virtualWidth;
 extern int virtualHeight;
+extern float viewAngle;
+extern float viewAnglePos;
 
 #if RETRO_USING_OPENGL
-extern GLuint gfxTextureID[TEXTURE_LIMIT];
-extern GLuint framebufferId;
-extern GLuint fbTextureId;
+extern GLuint gfxTextureID[HW_TEXTURE_LIMIT];
+extern GLuint framebufferHW;
+extern GLuint renderbufferHW;
+extern GLuint retroBuffer;
+extern GLuint retroBuffer2x;
+extern GLuint videoBuffer;
 #endif
-
-#endif
+extern DrawVertex screenRect[4];
+extern DrawVertex retroScreenRect[4];
 
 int InitRenderDevice();
 void FlipScreen();
-#if RETRO_HARDWARE_RENDER
+void FlipScreenFB();
+void FlipScreenNoFB();
 void FlipScreenHRes();
-#endif
+void RenderFromTexture();
+void RenderFromRetroBuffer();
+
+void FlipScreenVideo();
+
 void ReleaseRenderDevice();
+
+void setFullScreen(bool fs);
 
 void GenerateBlendLookupTable();
 
@@ -140,12 +145,10 @@ inline void ClearGraphicsData()
 }
 void ClearScreen(byte index);
 
-void SetScreenSize(int width, int height);
-#if RETRO_SOFTWARE_RENDER
+void SetScreenSize(int width, int lineSize);
 void CopyFrameOverlay2x();
-#endif
+void TransferRetroBuffer();
 
-#if RETRO_HARDWARE_RENDER
 inline bool CheckSurfaceSize(int size)
 {
     for (int cnt = 2; cnt < 2048; cnt <<= 1) {
@@ -156,7 +159,7 @@ inline bool CheckSurfaceSize(int size)
 }
 
 void UpdateHardwareTextures();
-void SetScreenDimensions(int width, int height, int scale);
+void SetScreenDimensions(int width, int height, int winWidth, int winHeight);
 void ScaleViewport(int width, int height);
 void CalcPerspective(float fov, float aspectRatio, float nearPlane, float farPlane);
 
@@ -165,11 +168,12 @@ void UpdateTextureBufferWithTiles();
 void UpdateTextureBufferWithSortedSprites();
 void UpdateTextureBufferWithSprites();
 
-#endif
-
 // Layer Drawing
 void DrawObjectList(int layer);
 void DrawStageGFX();
+#if !RETRO_USE_ORIGINAL_CODE
+void DrawDebugOverlays();
+#endif
 
 // TileLayer Drawing
 void DrawHLineScrollLayer(int layerID);

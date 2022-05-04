@@ -53,16 +53,16 @@ void InitGifDecoder()
     gifDecoder.stackPtr       = 0;
     gifDecoder.prevCode       = NO_SUCH_CODE;
     gifDecoder.shiftState     = 0;
-    gifDecoder.shiftData      = 0u;
+    gifDecoder.shiftData      = 0;
     for (int i = 0; i <= LZ_MAX_CODE; ++i) gifDecoder.prefix[i] = (byte)NO_SUCH_CODE;
 }
 void ReadGifLine(byte *line, int length, int offset)
 {
     int i         = 0;
-    int stackPtr       = gifDecoder.stackPtr;
+    int stackPtr  = gifDecoder.stackPtr;
     int eofCode   = gifDecoder.eofCode;
     int clearCode = gifDecoder.clearCode;
-    int prevCode      = gifDecoder.prevCode;
+    int prevCode  = gifDecoder.prevCode;
     if (stackPtr != 0) {
         while (stackPtr != 0) {
             if (i >= length) {
@@ -115,7 +115,7 @@ void ReadGifLine(byte *line, int length, int offset)
                     int c = 0;
                     while (c++ <= LZ_MAX_CODE && code > clearCode && code <= LZ_MAX_CODE) {
                         gifDecoder.stack[stackPtr++] = gifDecoder.suffix[code];
-                        code                    = gifDecoder.prefix[code];
+                        code                         = gifDecoder.prefix[code];
                     }
                     if (c >= LZ_MAX_CODE | code > LZ_MAX_CODE) {
                         return;
@@ -295,14 +295,14 @@ int LoadBMPFile(const char *filePath, byte sheetID)
         }
         gfxDataPosition += surface->height * surface->width;
 
-#if RETRO_SOFTWARE_RENDER
-        surface->widthShifted = 0;
-        int w               = surface->width;
-        while (w > 1) {
-            w >>= 1;
-            ++surface->widthShifted;
+        if (renderType == RENDER_SW) {
+            surface->widthShifted = 0;
+            int w                 = surface->width;
+            while (w > 1) {
+                w >>= 1;
+                ++surface->widthShifted;
+            }
         }
-#endif
 
         if (gfxDataPosition >= GFXDATA_MAX) {
             gfxDataPosition = 0;
@@ -335,8 +335,8 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         surface->height += (fileBuffer << 8);
 
         FileRead(&fileBuffer, 1); // Palette Size
-        //int has_pallete = (fileBuffer & 0x80) >> 7;
-        //int colors = ((fileBuffer & 0x70) >> 4) + 1;
+        // int has_pallete = (fileBuffer & 0x80) >> 7;
+        // int colors = ((fileBuffer & 0x70) >> 4) + 1;
         int palette_size = (fileBuffer & 0x7) + 1;
         if (palette_size > 0)
             palette_size = 1 << palette_size;
@@ -369,14 +369,14 @@ int LoadGIFFile(const char *filePath, byte sheetID)
         }
 
         surface->dataPosition = gfxDataPosition;
-#if RETRO_SOFTWARE_RENDER
-        surface->widthShifted = 0;
-        int w                 = surface->width;
-        while (w > 1) {
-            w >>= 1;
-            ++surface->widthShifted;
+        if (renderType == RENDER_SW) {
+            surface->widthShifted = 0;
+            int w                 = surface->width;
+            while (w > 1) {
+                w >>= 1;
+                ++surface->widthShifted;
+            }
         }
-#endif
 
         gfxDataPosition += surface->width * surface->height;
         if (gfxDataPosition < GFXDATA_MAX) {
@@ -433,14 +433,14 @@ int LoadGFXFile(const char *filePath, byte sheetID)
         }
 
         gfxDataPosition += surface->height * surface->width;
-#if RETRO_SOFTWARE_RENDER
-        surface->widthShifted = 0;
-        int w               = surface->width;
-        while (w > 1) {
-            w >>= 1;
-            ++surface->widthShifted;
+        if (renderType == RENDER_SW) {
+            surface->widthShifted = 0;
+            int w                 = surface->width;
+            while (w > 1) {
+                w >>= 1;
+                ++surface->widthShifted;
+            }
         }
-#endif
 
         if (gfxDataPosition >= GFXDATA_MAX) {
             gfxDataPosition = 0;
@@ -459,7 +459,7 @@ int LoadRSVFile(const char *filePath, byte sheetID)
         GFXSurface *surface = &gfxSurface[sheetID];
         StrCopy(surface->fileName, filePath);
 
-        videoData         = sheetID;
+        videoSurface         = sheetID;
         currentVideoFrame = 0;
 
         byte fileBuffer = 0;
@@ -479,8 +479,8 @@ int LoadRSVFile(const char *filePath, byte sheetID)
         FileRead(&fileBuffer, 1);
         videoHeight += fileBuffer << 8;
 
-        videoFilePos   = (int)GetFilePosition();
-        videoPlaying          = true;
+        videoFilePos          = (int)GetFilePosition();
+        videoPlaying          = 2; // playing rsv
         surface->width        = videoWidth;
         surface->height       = videoHeight;
         surface->dataPosition = gfxDataPosition;
@@ -520,14 +520,14 @@ int LoadPVRFile(const char *filePath, byte sheetID)
         surface->dataPosition = gfxDataPosition;
         gfxDataPosition += surface->width * surface->height;
 
-#if RETRO_SOFTWARE_RENDER
-        surface->widthShifted = 0;
-        int w               = surface->width;
-        while (w > 1) {
-            w >>= 1;
-            ++surface->widthShifted;
+        if (renderType == RENDER_SW) {
+            surface->widthShifted = 0;
+            int w                 = surface->width;
+            while (w > 1) {
+                w >>= 1;
+                ++surface->widthShifted;
+            }
         }
-#endif
 
         return false; // yeah I have no clue how to handle this, cd lite has this be loaded every frame on framebuffer update and does it that way
 

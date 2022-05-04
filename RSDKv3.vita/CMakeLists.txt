@@ -15,7 +15,7 @@ endif()
 
 ## Define project parameters here
 # Name of the project
-project(SonicCD)
+project(RSDKv3)
 # This line adds Vita helper macros, must go after project definition in order
 # to build Vita specific artifacts (self/vpk).
 include("${VITASDK}/share/vita.cmake" REQUIRED)
@@ -27,20 +27,19 @@ set(VITA_APP_NAME "Sonic CD")
 # unique string of developer and Y = a unique number for this app
 set(VITA_TITLEID  "RSDK00001")
 # Optional version string to show in LiveArea's more info screen
-set(VITA_VERSION  "01.00")
+set(VITA_VERSION  "1.3.0")
 
 ## Flags and includes for building
 # Note that we make sure not to overwrite previous flags
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3 -fsigned-char -fno-lto")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -fsigned-char -fno-lto -fno-rtti -fexceptions")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3 -fsigned-char -fno-lto -fno-rtti -fno-exceptions")
 # Optional. You can specify more param.sfo flags this way.
 set(VITA_MKSFOEX_FLAGS "${VITA_MKSFOEX_FLAGS} -d PARENTAL_LEVEL=1")
-
-add_compile_definitions(USE_SW_REN)
 
 # Add any additional include paths here
 include_directories(
   ../dependencies/all/theoraplay
+  ../dependencies/all/tinyxml2
   /home/user/vitasdk/arm-vita-eabi/include
 )
 
@@ -51,10 +50,32 @@ link_directories(
 )
 
 ## Build and link
-file(GLOB_RECURSE SOURCES ../RSDKv3/*.cpp)
+# Add all the files needed to compile here
 add_executable(${PROJECT_NAME}
-  ${SOURCES}
-  ../dependencies/all/theoraplay/theoraplay.c
+    ../dependencies/all/theoraplay/theoraplay.c
+    ../RSDKv3/Animation.cpp
+    ../RSDKv3/Audio.cpp
+    ../RSDKv3/Collision.cpp
+    ../RSDKv3/Debug.cpp
+    ../RSDKv3/Drawing.cpp
+    ../RSDKv3/Ini.cpp
+    ../RSDKv3/Input.cpp
+    ../RSDKv3/Math.cpp
+    ../RSDKv3/ModAPI.cpp
+    ../RSDKv3/Object.cpp
+    ../RSDKv3/Palette.cpp
+    ../RSDKv3/Player.cpp
+    ../RSDKv3/Reader.cpp
+    ../RSDKv3/RetroEngine.cpp
+    ../RSDKv3/Scene.cpp
+    ../RSDKv3/Scene3D.cpp
+    ../RSDKv3/Script.cpp
+    ../RSDKv3/Sprite.cpp
+    ../RSDKv3/String.cpp
+    ../RSDKv3/Text.cpp
+    ../RSDKv3/Userdata.cpp
+    ../RSDKv3/Video.cpp
+    ../RSDKv3/main.cpp
 )
 
 # Library to link to (drop the -l prefix). This will mostly be stubs.
@@ -65,6 +86,8 @@ target_link_libraries(${PROJECT_NAME}
   vorbis
   ogg
   theora
+  glew
+  tinyxml2
   pthread
   SceDisplay_stub
   SceAudio_stub

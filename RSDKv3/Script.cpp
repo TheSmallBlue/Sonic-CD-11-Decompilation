@@ -22,8 +22,8 @@ int scriptDataOffset    = 0;
 int jumpTableDataPos    = 0;
 int jumpTableDataOffset = 0;
 
-#define ALIAS_COUNT       (0x80)
 #define COMMONALIAS_COUNT (0x20)
+#define ALIAS_COUNT       (COMMONALIAS_COUNT + 0x60)
 int aliasCount = 0;
 int lineID     = 0;
 
@@ -292,140 +292,140 @@ const char variableNames[][0x20] = {
 };
 
 const FunctionInfo functions[] = { FunctionInfo("End", 0),
-                             FunctionInfo("Equal", 2),
-                             FunctionInfo("Add", 2),
-                             FunctionInfo("Sub", 2),
-                             FunctionInfo("Inc", 1),
-                             FunctionInfo("Dec", 1),
-                             FunctionInfo("Mul", 2),
-                             FunctionInfo("Div", 2),
-                             FunctionInfo("ShR", 2),
-                             FunctionInfo("ShL", 2),
-                             FunctionInfo("And", 2),
-                             FunctionInfo("Or", 2),
-                             FunctionInfo("Xor", 2),
-                             FunctionInfo("Mod", 2),
-                             FunctionInfo("FlipSign", 1),
-                             FunctionInfo("CheckEqual", 2),
-                             FunctionInfo("CheckGreater", 2),
-                             FunctionInfo("CheckLower", 2),
-                             FunctionInfo("CheckNotEqual", 2),
-                             FunctionInfo("IfEqual", 3),
-                             FunctionInfo("IfGreater", 3),
-                             FunctionInfo("IfGreaterOrEqual", 3),
-                             FunctionInfo("IfLower", 3),
-                             FunctionInfo("IfLowerOrEqual", 3),
-                             FunctionInfo("IfNotEqual", 3),
-                             FunctionInfo("else", 0),
-                             FunctionInfo("endif", 0),
-                             FunctionInfo("WEqual", 3),
-                             FunctionInfo("WGreater", 3),
-                             FunctionInfo("WGreaterOrEqual", 3),
-                             FunctionInfo("WLower", 3),
-                             FunctionInfo("WLowerOrEqual", 3),
-                             FunctionInfo("WNotEqual", 3),
-                             FunctionInfo("loop", 0),
-                             FunctionInfo("switch", 2),
-                             FunctionInfo("break", 0),
-                             FunctionInfo("endswitch", 0),
-                             FunctionInfo("Rand", 2),
-                             FunctionInfo("Sin", 2),
-                             FunctionInfo("Cos", 2),
-                             FunctionInfo("Sin256", 2),
-                             FunctionInfo("Cos256", 2),
-                             FunctionInfo("SinChange", 5),
-                             FunctionInfo("CosChange", 5),
-                             FunctionInfo("ATan2", 3),
-                             FunctionInfo("Interpolate", 4),
-                             FunctionInfo("InterpolateXY", 7),
-                             FunctionInfo("LoadSpriteSheet", 1),
-                             FunctionInfo("RemoveSpriteSheet", 1),
-                             FunctionInfo("DrawSprite", 1),
-                             FunctionInfo("DrawSpriteXY", 3),
-                             FunctionInfo("DrawSpriteScreenXY", 3),
-                             FunctionInfo("DrawTintRect", 4),
-                             FunctionInfo("DrawNumbers", 7),
-                             FunctionInfo("DrawActName", 7),
-                             FunctionInfo("DrawMenu", 3),
-                             FunctionInfo("SpriteFrame", 6),
-                             FunctionInfo("EditFrame", 7),
-                             FunctionInfo("LoadPalette", 5),
-                             FunctionInfo("RotatePalette", 3),
-                             FunctionInfo("SetScreenFade", 4),
-                             FunctionInfo("SetActivePalette", 3),
-                             FunctionInfo("SetPaletteFade", 7),
-                             FunctionInfo("CopyPalette", 2),
-                             FunctionInfo("ClearScreen", 1),
-                             FunctionInfo("DrawSpriteFX", 4),
-                             FunctionInfo("DrawSpriteScreenFX", 4),
-                             FunctionInfo("LoadAnimation", 1),
-                             FunctionInfo("SetupMenu", 4),
-                             FunctionInfo("AddMenuEntry", 3),
-                             FunctionInfo("EditMenuEntry", 4),
-                             FunctionInfo("LoadStage", 0),
-                             FunctionInfo("DrawRect", 8),
-                             FunctionInfo("ResetObjectEntity", 5),
-                             FunctionInfo("PlayerObjectCollision", 5),
-                             FunctionInfo("CreateTempObject", 4),
-                             FunctionInfo("BindPlayerToObject", 2),
-                             FunctionInfo("PlayerTileCollision", 0),
-                             FunctionInfo("ProcessPlayerControl", 0),
-                             FunctionInfo("ProcessAnimation", 0),
-                             FunctionInfo("DrawObjectAnimation", 0),
-                             FunctionInfo("DrawPlayerAnimation", 0),
-                             FunctionInfo("SetMusicTrack", 3),
-                             FunctionInfo("PlayMusic", 1),
-                             FunctionInfo("StopMusic", 0),
-                             FunctionInfo("PlaySfx", 2),
-                             FunctionInfo("StopSfx", 1),
-                             FunctionInfo("SetSfxAttributes", 3),
-                             FunctionInfo("ObjectTileCollision", 4),
-                             FunctionInfo("ObjectTileGrip", 4),
-                             FunctionInfo("LoadVideo", 1),
-                             FunctionInfo("NextVideoFrame", 0),
-                             FunctionInfo("PlayStageSfx", 2),
-                             FunctionInfo("StopStageSfx", 1),
-                             FunctionInfo("Not", 1),
-                             FunctionInfo("Draw3DScene", 0),
-                             FunctionInfo("SetIdentityMatrix", 1),
-                             FunctionInfo("MatrixMultiply", 2),
-                             FunctionInfo("MatrixTranslateXYZ", 4),
-                             FunctionInfo("MatrixScaleXYZ", 4),
-                             FunctionInfo("MatrixRotateX", 2),
-                             FunctionInfo("MatrixRotateY", 2),
-                             FunctionInfo("MatrixRotateZ", 2),
-                             FunctionInfo("MatrixRotateXYZ", 4),
-                             FunctionInfo("TransformVertices", 3),
-                             FunctionInfo("CallFunction", 1),
-                             FunctionInfo("EndFunction", 0),
-                             FunctionInfo("SetLayerDeformation", 6),
-                             FunctionInfo("CheckTouchRect", 4),
-                             FunctionInfo("GetTileLayerEntry", 4),
-                             FunctionInfo("SetTileLayerEntry", 4),
-                             FunctionInfo("GetBit", 3),
-                             FunctionInfo("SetBit", 3),
-                             FunctionInfo("PauseMusic", 0),
-                             FunctionInfo("ResumeMusic", 0),
-                             FunctionInfo("ClearDrawList", 1),
-                             FunctionInfo("AddDrawListEntityRef", 2),
-                             FunctionInfo("GetDrawListEntityRef", 3),
-                             FunctionInfo("SetDrawListEntityRef", 3),
-                             FunctionInfo("Get16x16TileInfo", 4),
-                             FunctionInfo("Copy16x16Tile", 2),
-                             FunctionInfo("Set16x16TileInfo", 4),
-                             FunctionInfo("GetAnimationByName", 2),
-                             FunctionInfo("ReadSaveRAM", 0),
-                             FunctionInfo("WriteSaveRAM", 0),
-                             FunctionInfo("LoadTextFont", 1),
-                             FunctionInfo("LoadTextFile", 3),
-                             FunctionInfo("DrawText", 7),
-                             FunctionInfo("GetTextInfo", 5),
-                             FunctionInfo("GetVersionNumber", 2),
-                             FunctionInfo("SetAchievement", 2),
-                             FunctionInfo("SetLeaderboard", 2),
-                             FunctionInfo("LoadOnlineMenu", 1),
-                             FunctionInfo("EngineCallback", 1),
-                             FunctionInfo("HapticEffect", 4) };
+                                   FunctionInfo("Equal", 2),
+                                   FunctionInfo("Add", 2),
+                                   FunctionInfo("Sub", 2),
+                                   FunctionInfo("Inc", 1),
+                                   FunctionInfo("Dec", 1),
+                                   FunctionInfo("Mul", 2),
+                                   FunctionInfo("Div", 2),
+                                   FunctionInfo("ShR", 2),
+                                   FunctionInfo("ShL", 2),
+                                   FunctionInfo("And", 2),
+                                   FunctionInfo("Or", 2),
+                                   FunctionInfo("Xor", 2),
+                                   FunctionInfo("Mod", 2),
+                                   FunctionInfo("FlipSign", 1),
+                                   FunctionInfo("CheckEqual", 2),
+                                   FunctionInfo("CheckGreater", 2),
+                                   FunctionInfo("CheckLower", 2),
+                                   FunctionInfo("CheckNotEqual", 2),
+                                   FunctionInfo("IfEqual", 3),
+                                   FunctionInfo("IfGreater", 3),
+                                   FunctionInfo("IfGreaterOrEqual", 3),
+                                   FunctionInfo("IfLower", 3),
+                                   FunctionInfo("IfLowerOrEqual", 3),
+                                   FunctionInfo("IfNotEqual", 3),
+                                   FunctionInfo("else", 0),
+                                   FunctionInfo("endif", 0),
+                                   FunctionInfo("WEqual", 3),
+                                   FunctionInfo("WGreater", 3),
+                                   FunctionInfo("WGreaterOrEqual", 3),
+                                   FunctionInfo("WLower", 3),
+                                   FunctionInfo("WLowerOrEqual", 3),
+                                   FunctionInfo("WNotEqual", 3),
+                                   FunctionInfo("loop", 0),
+                                   FunctionInfo("switch", 2),
+                                   FunctionInfo("break", 0),
+                                   FunctionInfo("endswitch", 0),
+                                   FunctionInfo("Rand", 2),
+                                   FunctionInfo("Sin", 2),
+                                   FunctionInfo("Cos", 2),
+                                   FunctionInfo("Sin256", 2),
+                                   FunctionInfo("Cos256", 2),
+                                   FunctionInfo("SinChange", 5),
+                                   FunctionInfo("CosChange", 5),
+                                   FunctionInfo("ATan2", 3),
+                                   FunctionInfo("Interpolate", 4),
+                                   FunctionInfo("InterpolateXY", 7),
+                                   FunctionInfo("LoadSpriteSheet", 1),
+                                   FunctionInfo("RemoveSpriteSheet", 1),
+                                   FunctionInfo("DrawSprite", 1),
+                                   FunctionInfo("DrawSpriteXY", 3),
+                                   FunctionInfo("DrawSpriteScreenXY", 3),
+                                   FunctionInfo("DrawTintRect", 4),
+                                   FunctionInfo("DrawNumbers", 7),
+                                   FunctionInfo("DrawActName", 7),
+                                   FunctionInfo("DrawMenu", 3),
+                                   FunctionInfo("SpriteFrame", 6),
+                                   FunctionInfo("EditFrame", 7),
+                                   FunctionInfo("LoadPalette", 5),
+                                   FunctionInfo("RotatePalette", 3),
+                                   FunctionInfo("SetScreenFade", 4),
+                                   FunctionInfo("SetActivePalette", 3),
+                                   FunctionInfo("SetPaletteFade", 7),
+                                   FunctionInfo("CopyPalette", 2),
+                                   FunctionInfo("ClearScreen", 1),
+                                   FunctionInfo("DrawSpriteFX", 4),
+                                   FunctionInfo("DrawSpriteScreenFX", 4),
+                                   FunctionInfo("LoadAnimation", 1),
+                                   FunctionInfo("SetupMenu", 4),
+                                   FunctionInfo("AddMenuEntry", 3),
+                                   FunctionInfo("EditMenuEntry", 4),
+                                   FunctionInfo("LoadStage", 0),
+                                   FunctionInfo("DrawRect", 8),
+                                   FunctionInfo("ResetObjectEntity", 5),
+                                   FunctionInfo("PlayerObjectCollision", 5),
+                                   FunctionInfo("CreateTempObject", 4),
+                                   FunctionInfo("BindPlayerToObject", 2),
+                                   FunctionInfo("PlayerTileCollision", 0),
+                                   FunctionInfo("ProcessPlayerControl", 0),
+                                   FunctionInfo("ProcessAnimation", 0),
+                                   FunctionInfo("DrawObjectAnimation", 0),
+                                   FunctionInfo("DrawPlayerAnimation", 0),
+                                   FunctionInfo("SetMusicTrack", 3),
+                                   FunctionInfo("PlayMusic", 1),
+                                   FunctionInfo("StopMusic", 0),
+                                   FunctionInfo("PlaySfx", 2),
+                                   FunctionInfo("StopSfx", 1),
+                                   FunctionInfo("SetSfxAttributes", 3),
+                                   FunctionInfo("ObjectTileCollision", 4),
+                                   FunctionInfo("ObjectTileGrip", 4),
+                                   FunctionInfo("LoadVideo", 1),
+                                   FunctionInfo("NextVideoFrame", 0),
+                                   FunctionInfo("PlayStageSfx", 2),
+                                   FunctionInfo("StopStageSfx", 1),
+                                   FunctionInfo("Not", 1),
+                                   FunctionInfo("Draw3DScene", 0),
+                                   FunctionInfo("SetIdentityMatrix", 1),
+                                   FunctionInfo("MatrixMultiply", 2),
+                                   FunctionInfo("MatrixTranslateXYZ", 4),
+                                   FunctionInfo("MatrixScaleXYZ", 4),
+                                   FunctionInfo("MatrixRotateX", 2),
+                                   FunctionInfo("MatrixRotateY", 2),
+                                   FunctionInfo("MatrixRotateZ", 2),
+                                   FunctionInfo("MatrixRotateXYZ", 4),
+                                   FunctionInfo("TransformVertices", 3),
+                                   FunctionInfo("CallFunction", 1),
+                                   FunctionInfo("EndFunction", 0),
+                                   FunctionInfo("SetLayerDeformation", 6),
+                                   FunctionInfo("CheckTouchRect", 4),
+                                   FunctionInfo("GetTileLayerEntry", 4),
+                                   FunctionInfo("SetTileLayerEntry", 4),
+                                   FunctionInfo("GetBit", 3),
+                                   FunctionInfo("SetBit", 3),
+                                   FunctionInfo("PauseMusic", 0),
+                                   FunctionInfo("ResumeMusic", 0),
+                                   FunctionInfo("ClearDrawList", 1),
+                                   FunctionInfo("AddDrawListEntityRef", 2),
+                                   FunctionInfo("GetDrawListEntityRef", 3),
+                                   FunctionInfo("SetDrawListEntityRef", 3),
+                                   FunctionInfo("Get16x16TileInfo", 4),
+                                   FunctionInfo("Copy16x16Tile", 2),
+                                   FunctionInfo("Set16x16TileInfo", 4),
+                                   FunctionInfo("GetAnimationByName", 2),
+                                   FunctionInfo("ReadSaveRAM", 0),
+                                   FunctionInfo("WriteSaveRAM", 0),
+                                   FunctionInfo("LoadTextFont", 1),
+                                   FunctionInfo("LoadTextFile", 3),
+                                   FunctionInfo("DrawText", 7),
+                                   FunctionInfo("GetTextInfo", 5),
+                                   FunctionInfo("GetVersionNumber", 2),
+                                   FunctionInfo("SetAchievement", 2),
+                                   FunctionInfo("SetLeaderboard", 2),
+                                   FunctionInfo("LoadOnlineMenu", 1),
+                                   FunctionInfo("EngineCallback", 1),
+                                   FunctionInfo("HapticEffect", 4) };
 
 AliasInfo aliases[0x80] = { AliasInfo("true", "1"),
                             AliasInfo("false", "0"),
@@ -460,16 +460,20 @@ AliasInfo aliases[0x80] = { AliasInfo("true", "1"),
                             AliasInfo("RETRO_ANDROID", "5"),
                             AliasInfo("RETRO_WP7", "6") };
 
-
-const char scriptEvaluationTokens[][0x4] = {
-    "=", "+=", "-=", "++", "--", "*=", "/=", ">>=", "<<=", "&=", "|=", "^=", "%=", "==", ">", ">=", "<", "<=", "!="
-};
+const char scriptEvaluationTokens[][0x4] = { "=",  "+=", "-=", "++", "--", "*=", "/=", ">>=", "<<=", "&=",
+                                             "|=", "^=", "%=", "==", ">",  ">=", "<",  "<=",  "!=" };
 
 int scriptFunctionCount = 0;
 char scriptFunctionNames[FUNCTION_COUNT][0x20];
 
 enum ScriptReadModes { READMODE_NORMAL = 0, READMODE_STRING = 1, READMODE_COMMENTLINE = 2, READMODE_ENDLINE = 3, READMODE_EOF = 4 };
-enum ScriptParseModes { PARSEMODE_SCOPELESS = 0, PARSEMODE_PLATFORMSKIP = 1, PARSEMODE_FUNCTION = 2, PARSEMODE_SWITCHREAD = 3, PARSEMODE_ERROR = 0xFF };
+enum ScriptParseModes {
+    PARSEMODE_SCOPELESS    = 0,
+    PARSEMODE_PLATFORMSKIP = 1,
+    PARSEMODE_FUNCTION     = 2,
+    PARSEMODE_SWITCHREAD   = 3,
+    PARSEMODE_ERROR        = 0xFF
+};
 
 enum ScriptVarTypes { SCRIPTVAR_VAR = 1, SCRIPTVAR_INTCONST = 2, SCRIPTVAR_STRCONST = 3 };
 enum ScriptVarArrTypes { VARARR_NONE = 0, VARARR_ARRAY = 1, VARARR_ENTNOPLUS1 = 2, VARARR_ENTNOMINUS1 = 3 };
@@ -867,9 +871,9 @@ void CheckAliasText(char *text)
             }
         }
         else if (text[textPos] == ':') {
-            aliases[aliasCount].value[aliasStrPos]        = 0;
-            aliasStrPos                             = 0;
-            aliasMatch                              = 1;
+            aliases[aliasCount].value[aliasStrPos] = 0;
+            aliasStrPos                            = 0;
+            aliasMatch                             = 1;
         }
         else {
             aliases[aliasCount].value[aliasStrPos++] = text[textPos];
@@ -916,11 +920,11 @@ void ConvertIfWhileStatement(char *text)
     int strPos     = 0;
     int destStrPos = 0;
     if (FindStringToken(text, "if", 1)) {
-        if (!FindStringToken(text, "while", 1)) { //if no "if" but there is "while"
+        if (!FindStringToken(text, "while", 1)) { // if no "if" but there is "while"
             for (int i = 0; i < 6; ++i) {
                 destStrPos = FindStringToken(text, scriptEvaluationTokens[i + FUNC_MOD], 1);
                 if (destStrPos > -1) {
-                    strPos = destStrPos;
+                    strPos    = destStrPos;
                     compareOp = i;
                 }
             }
@@ -948,7 +952,7 @@ void ConvertIfWhileStatement(char *text)
         for (int i = 0; i < 6; ++i) {
             destStrPos = FindStringToken(text, scriptEvaluationTokens[i + FUNC_MOD], 1);
             if (destStrPos > -1) {
-                strPos = destStrPos;
+                strPos    = destStrPos;
                 compareOp = i;
             }
         }
@@ -1020,6 +1024,14 @@ void ConvertFunctionText(char *text)
         AddTextMenuEntry(&gameMenu[0], " ");
         AddTextMenuEntry(&gameMenu[0], "OPCODE NOT FOUND");
         AddTextMenuEntry(&gameMenu[0], funcName);
+#if !RETRO_USE_ORIGINAL_CODE
+        AddTextMenuEntry(&gameMenu[0], " ");
+        AddTextMenuEntry(&gameMenu[0], "LINE NUMBER");
+        char buffer[0x10];
+        buffer[0] = 0;
+        AppendIntegerToString(buffer, lineID);
+        AddTextMenuEntry(&gameMenu[0], buffer);
+#endif
         Engine.gameMode = ENGINE_SCRIPTERROR;
     }
     else {
@@ -1040,7 +1052,7 @@ void ConvertFunctionText(char *text)
             jumpTableData[jPos + 3] = scriptDataPos - scriptDataOffset;
             if (jumpTableData[jPos + 2] == -1) {
                 jumpTableData[jPos + 2] = (scriptDataPos - scriptDataOffset) - 1;
-                int caseCnt                = abs(jumpTableData[jPos + 1] - jumpTableData[jPos]) + 1;
+                int caseCnt             = abs(jumpTableData[jPos + 1] - jumpTableData[jPos]) + 1;
 
                 int jOffset = jPos + 4;
                 for (int c = 0; c < caseCnt; ++c) {
@@ -1112,6 +1124,105 @@ void ConvertFunctionText(char *text)
                     }
                 }
             }
+
+#if RETRO_USE_MOD_LOADER
+            // Eg: TempValue0 = SfxName[Jump]
+            if (StrComp(funcName, "SfxName")) {
+                funcName[0] = 0;
+                AppendIntegerToString(funcName, 0);
+                int s = 0;
+                for (; s < globalSFXCount; ++s) {
+                    if (StrComp(strBuffer, globalSfxNames[s])) {
+                        funcName[0] = 0;
+                        AppendIntegerToString(funcName, s);
+                        break;
+                    }
+                }
+
+                if (s == globalSFXCount) {
+                    s = 0;
+                    for (; s < stageSFXCount; ++s) {
+                        if (StrComp(strBuffer, stageSfxNames[s])) {
+                            funcName[0] = 0;
+                            AppendIntegerToString(funcName, s);
+                            break;
+                        }
+                    }
+
+                    if (s == stageSFXCount) {
+                        char buf[0x40];
+                        sprintf(buf, "WARNING: Unknown SfxName \"%s\"", strBuffer);
+                        printLog(buf);
+                    }
+                }
+            }
+
+            // Eg: TempValue0 = AchievementName[88 Miles Per Hour]
+            if (StrComp(funcName, "AchievementName")) {
+                funcName[0] = 0;
+                AppendIntegerToString(funcName, 0);
+                int a = 0;
+                for (; a < ACHIEVEMENT_MAX; ++a) {
+                    if (StrComp(strBuffer, achievements[a].name)) {
+                        funcName[0] = 0;
+                        AppendIntegerToString(funcName, a);
+                        break;
+                    }
+                }
+
+                if (a == ACHIEVEMENT_MAX) {
+                    char buf[0x40];
+                    sprintf(buf, "WARNING: Unknown AchievementName \"%s\"", strBuffer);
+                    printLog(buf);
+                }
+            }
+
+            // Eg: TempValue0 = PlayerName[SONIC]
+            if (StrComp(funcName, "PlayerName")) {
+                funcName[0] = 0;
+                AppendIntegerToString(funcName, 0);
+                int p = 0;
+                for (; p < PLAYER_MAX; ++p) {
+                    if (StrComp(strBuffer, playerNames[p])) {
+                        funcName[0] = 0;
+                        AppendIntegerToString(funcName, p);
+                        break;
+                    }
+                }
+
+                if (p == PLAYER_MAX) {
+                    char buf[0x40];
+                    sprintf(buf, "WARNING: Unknown PlayerName \"%s\"", strBuffer);
+                    printLog(buf);
+                }
+            }
+
+            // Eg: TempValue0 = StageName[R - PALMTREE PANIC ZONE 1 A]
+            if (StrComp(funcName, "StageName")) {
+                funcName[0] = 0;
+                int s       = -1;
+                if (StrLength(strBuffer) >= 2) {
+                    char list = strBuffer[0];
+                    switch (list) {
+                        case 'P': list = STAGELIST_PRESENTATION; break;
+                        case 'R': list = STAGELIST_REGULAR; break;
+                        case 'S': list = STAGELIST_SPECIAL; break;
+                        case 'B': list = STAGELIST_BONUS; break;
+                    }
+                    s = GetSceneID(list, &strBuffer[2]);
+                }
+
+                if (s == -1) {
+                    char buf[0x40];
+                    sprintf(buf, "WARNING: Unknown StageName \"%s\", on line %d", strBuffer, lineID);
+                    printLog(buf);
+                    s = 0;
+                }
+                funcName[0] = 0;
+                AppendIntegerToString(funcName, s);
+            }
+#endif
+
             if (ConvertStringToInteger(funcName, &value)) {
                 scriptData[scriptDataPos++] = SCRIPTVAR_INTCONST;
                 scriptData[scriptDataPos++] = value;
@@ -1215,7 +1326,7 @@ void CheckCaseNumber(char *text)
     int destStrPos = 0;
     char caseChar  = text[4];
     if (text[4]) {
-        int textPos    = 5;
+        int textPos = 5;
         do {
             if (caseChar != ':')
                 dest[destStrPos++] = caseChar;
@@ -1269,7 +1380,7 @@ bool ReadSwitchCase(char *text)
         }
     }
     else {
-        int textPos      = 4;
+        int textPos       = 4;
         int caseStringPos = 0;
         while (text[textPos]) {
             if (text[textPos] != ':')
@@ -1306,7 +1417,7 @@ void AppendIntegerToString(char *text, int value)
     while (v != 0) {
         v /= 10;
         cnt++;
-    } 
+    }
 
     v = 0;
     for (int i = cnt - 1; i >= 0; --i) {
@@ -1315,7 +1426,7 @@ void AppendIntegerToString(char *text, int value)
 
         int strValue = v + '0';
         if (strValue < '0' || strValue > '9') {
-            //what
+            // what
         }
         text[textPos++] = strValue;
     }
@@ -1557,7 +1668,7 @@ void ParseScriptFile(char *scriptName, int scriptID)
                             char funcName[0x20];
                             for (textPos = 9; scriptText[textPos]; ++textPos) funcName[textPos - 9] = scriptText[textPos];
                             funcName[textPos - 9] = 0;
-                            int funcID             = -1;
+                            int funcID            = -1;
                             for (int f = 0; f < scriptFunctionCount; ++f) {
                                 if (StrComp(funcName, scriptFunctionNames[f]))
                                     funcID = f;
@@ -1572,7 +1683,7 @@ void ParseScriptFile(char *scriptName, int scriptID)
                         char funcName[0x20];
                         for (textPos = 8; scriptText[textPos]; ++textPos) funcName[textPos - 8] = scriptText[textPos];
                         funcName[textPos - 8] = 0;
-                        int funcID             = -1;
+                        int funcID            = -1;
                         for (int f = 0; f < scriptFunctionCount; ++f) {
                             if (StrComp(funcName, scriptFunctionNames[f]))
                                 funcID = f;
@@ -1594,10 +1705,10 @@ void ParseScriptFile(char *scriptName, int scriptID)
                         else {
                             StrCopy(scriptFunctionNames[funcID], funcName);
                             functionScriptList[funcID].scriptCodePtr = scriptDataPos;
-                            functionScriptList[funcID].jumpTablePtr               = jumpTableDataPos;
-                            scriptDataOffset                                      = scriptDataPos;
-                            jumpTableDataOffset                                   = jumpTableDataPos;
-                            parseMode                                             = PARSEMODE_FUNCTION;
+                            functionScriptList[funcID].jumpTablePtr  = jumpTableDataPos;
+                            scriptDataOffset                         = scriptDataPos;
+                            jumpTableDataOffset                      = jumpTableDataPos;
+                            parseMode                                = PARSEMODE_FUNCTION;
                         }
                     }
                     break;
@@ -1617,8 +1728,9 @@ void ParseScriptFile(char *scriptName, int scriptID)
                             scriptData[scriptDataPos++] = FUNC_ENDFUNCTION;
                             parseMode                   = PARSEMODE_SCOPELESS;
                         }
-                        else if (FindStringToken(scriptText, "#platform:", 1)) { //layed out like ass, but this means "if we did not find "#platform:"
-                            if (FindStringToken(scriptText, "#endplatform", 1) == -1) { //if we did NOT find "#endplatform"
+                        else if (FindStringToken(scriptText, "#platform:", 1)) {        // layed out like ass, but this means "if we did not find
+                                                                                        // "#platform:"
+                            if (FindStringToken(scriptText, "#endplatform", 1) == -1) { // if we did NOT find "#endplatform"
                                 ConvertIfWhileStatement(scriptText);
                                 if (ConvertSwitchStatement(scriptText)) {
                                     parseMode    = PARSEMODE_SWITCHREAD;
@@ -1640,9 +1752,15 @@ void ParseScriptFile(char *scriptName, int scriptID)
                         else if (FindStringToken(scriptText, Engine.gamePlatform, 1) == -1
                                  && FindStringToken(scriptText, Engine.gameRenderType, 1) == -1
 #if RETRO_USE_HAPTICS
-                                 && FindStringToken(scriptText, Engine.gameHapticSetting, 1) == -1)
+                                 && FindStringToken(scriptText, Engine.gameHapticSetting, 1) == -1
 #endif
-                        { //if NONE of these checks succeeded, then we skip everything until "end platform"
+#if !RETRO_USE_ORIGINAL_CODE
+                                 && FindStringToken(scriptText, "Use_Decomp", 1) == -1
+#endif
+#if RETRO_USE_MOD_LOADER
+                                 && FindStringToken(scriptText, "Use_Mod_Loader", 1) == -1
+#endif
+                        ) { // if NONE of these checks succeeded, then we skip everything until "end platform"
                             parseMode = PARSEMODE_PLATFORMSKIP;
                         }
                     }
@@ -1693,7 +1811,7 @@ void LoadBytecode(int stageListID, int scriptID)
         StrCopy(scriptPath, "Data/Scripts/ByteCode/GS000.bin");
         int pos = StrLength(scriptPath) - 9;
         if (stageListID < STAGELIST_MAX) {
-            char listIDs[4]     = { 'P', 'R', 'B', 'S'};
+            char listIDs[4]     = { 'P', 'R', 'B', 'S' };
             scriptPath[pos]     = listIDs[stageListID];
             scriptPath[pos + 2] = stageListPosition / 100 + '0';
             scriptPath[pos + 3] = stageListPosition % 100 / 10 + '0';
@@ -1704,7 +1822,7 @@ void LoadBytecode(int stageListID, int scriptID)
     FileInfo info;
     if (LoadFile(scriptPath, &info)) {
         byte fileBuffer = 0;
-        int *scrData   = &scriptData[scriptCodePos];
+        int *scrData    = &scriptData[scriptCodePos];
         FileRead(&fileBuffer, 1);
         int scriptDataCount = fileBuffer;
         FileRead(&fileBuffer, 1);
@@ -1909,9 +2027,9 @@ void ClearScriptData()
     memset(jumpTableData, 0, JUMPTABLE_COUNT * sizeof(int));
 
     scriptFrameCount = 0;
-    
-    scriptCodePos = 0;
-    jumpTablePos  = 0;
+
+    scriptCodePos     = 0;
+    jumpTablePos      = 0;
     jumpTableStackPos = 0;
     functionStackPos  = 0;
 
@@ -1923,7 +2041,7 @@ void ClearScriptData()
     scriptFunctionCount = 0;
 
     aliasCount = COMMONALIAS_COUNT;
-    lineID = 0;
+    lineID     = 0;
 
     ClearGraphicsData();
     ClearAnimationData();
@@ -1960,17 +2078,17 @@ void ClearScriptData()
 
 void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
 {
-    bool running         = true;
-    int scriptDataPtr    = scriptCodePtr;
-    //int jumpTableDataPtr = jumpTablePtr;
-    jumpTableStackPos    = 0;
-    functionStackPos     = 0;
+    bool running      = true;
+    int scriptDataPtr = scriptCodePtr;
+    // int jumpTableDataPtr = jumpTablePtr;
+    jumpTableStackPos = 0;
+    functionStackPos  = 0;
     while (running) {
         int opcode           = scriptData[scriptDataPtr++];
         int opcodeSize       = functions[opcode].opcodeSize;
         int scriptCodeOffset = scriptDataPtr;
 
-        // Get Valuess
+        // Get Values
         for (int i = 0; i < opcodeSize; ++i) {
             int opcodeType = scriptData[scriptDataPtr++];
 
@@ -2556,8 +2674,8 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_KEYPRESSSTART: scriptEng.operands[i] = keyPress.start; break;
                     case VAR_MENU1SELECTION: scriptEng.operands[i] = gameMenu[0].selection1; break;
                     case VAR_MENU2SELECTION: scriptEng.operands[i] = gameMenu[1].selection1; break;
-                    case VAR_TILELAYERXSIZE: scriptEng.operands[i] = stageLayouts[arrayVal].width; break;
-                    case VAR_TILELAYERYSIZE: scriptEng.operands[i] = stageLayouts[arrayVal].height; break;
+                    case VAR_TILELAYERXSIZE: scriptEng.operands[i] = stageLayouts[arrayVal].xsize; break;
+                    case VAR_TILELAYERYSIZE: scriptEng.operands[i] = stageLayouts[arrayVal].ysize; break;
                     case VAR_TILELAYERTYPE: scriptEng.operands[i] = stageLayouts[arrayVal].type; break;
                     case VAR_TILELAYERANGLE: scriptEng.operands[i] = stageLayouts[arrayVal].angle; break;
                     case VAR_TILELAYERXPOS: scriptEng.operands[i] = stageLayouts[arrayVal].XPos; break;
@@ -2894,21 +3012,29 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
             }
             case FUNC_DRAWACTNAME: {
                 opcodeSize = 0;
+                int charID = 0;
+
                 switch (scriptEng.operands[3]) {
-                    case 1: {
-                        int charID = 0;
+                    default: break;
+
+                    case 1: // Draw Word 1
+                        charID = 0;
+
+                        // Draw the first letter as a capital letter, the rest are lowercase (if scriptEng.operands[4] is true, otherwise they're all
+                        // uppercase)
                         if (scriptEng.operands[4] == 1 && titleCardText[charID] != 0) {
                             int character = titleCardText[charID];
                             if (character == ' ')
                                 character = 0;
                             if (character == '-')
                                 character = 0;
-                            if (character > '/' && character < ':')
+                            if (character >= '0' && character <= '9')
                                 character -= 22;
                             if (character > '9' && character < 'f')
                                 character -= 'A';
+
                             if (character <= -1) {
-                                scriptEng.operands[1] += scriptEng.operands[5] + scriptEng.operands[6];
+                                scriptEng.operands[1] += scriptEng.operands[5] + scriptEng.operands[6]; // spaceWidth + spacing
                             }
                             else {
                                 character += scriptEng.operands[0];
@@ -2917,39 +3043,12 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                                            spriteFrame->width, spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY, scriptInfo->spriteSheetID);
                                 scriptEng.operands[1] += spriteFrame->width + scriptEng.operands[6];
                             }
-                            scriptEng.operands[0] = scriptEng.operands[0] + 26;
+
+                            scriptEng.operands[0] += 26;
                             charID++;
                         }
-                        while (titleCardText[charID] != 0) {
-                            if (titleCardText[charID] != '-') {
-                                int character = titleCardText[charID];
-                                if (character == ' ')
-                                    character = 0;
-                                if (character == '-')
-                                    character = 0;
-                                if (character > '/' && character < ':')
-                                    character -= 22;
-                                if (character > '9' && character < 'f')
-                                    character -= 'A';
-                                if (character <= -1) {
-                                    scriptEng.operands[1] += scriptEng.operands[5] + scriptEng.operands[6];
-                                }
-                                else {
-                                    character += scriptEng.operands[0];
-                                    spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
-                                    DrawSprite(scriptEng.operands[1] + spriteFrame->pivotX, scriptEng.operands[2] + spriteFrame->pivotY,
-                                               spriteFrame->width, spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY,
-                                               scriptInfo->spriteSheetID);
-                                    scriptEng.operands[1] += spriteFrame->width + scriptEng.operands[6];
-                                }
-                                charID++;
-                            }
-                        }
-                        break;
-                    }
-                    case 2: {
-                        int charID = titleCardWord2;
-                        if (scriptEng.operands[4] == 1 && titleCardText[charID] != 0) {
+
+                        while (titleCardText[charID] != 0 && titleCardText[charID] != '-') {
                             int character = titleCardText[charID];
                             if (character == ' ')
                                 character = 0;
@@ -2959,8 +3058,39 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                                 character -= 22;
                             if (character > '9' && character < 'f')
                                 character -= 'A';
+
                             if (character <= -1) {
-                                scriptEng.operands[1] += scriptEng.operands[5] + scriptEng.operands[6];
+                                scriptEng.operands[1] += scriptEng.operands[5] + scriptEng.operands[6]; // spaceWidth + spacing
+                            }
+                            else {
+                                character += scriptEng.operands[0];
+                                spriteFrame = &scriptFrames[scriptInfo->frameListOffset + character];
+                                DrawSprite(scriptEng.operands[1] + spriteFrame->pivotX, scriptEng.operands[2] + spriteFrame->pivotY,
+                                           spriteFrame->width, spriteFrame->height, spriteFrame->sprX, spriteFrame->sprY, scriptInfo->spriteSheetID);
+                                scriptEng.operands[1] += spriteFrame->width + scriptEng.operands[6];
+                            }
+                            charID++;
+                        }
+                        break;
+
+                    case 2: // Draw Word 2
+                        charID = titleCardWord2;
+
+                        // Draw the first letter as a capital letter, the rest are lowercase (if scriptEng.operands[4] is true, otherwise they're all
+                        // uppercase)
+                        if (scriptEng.operands[4] == 1 && titleCardText[charID] != 0) {
+                            int character = titleCardText[charID];
+                            if (character == ' ')
+                                character = 0;
+                            if (character == '-')
+                                character = 0;
+                            if (character >= '0' && character <= '9')
+                                character -= 22;
+                            if (character > '9' && character < 'f')
+                                character -= 'A';
+
+                            if (character <= -1) {
+                                scriptEng.operands[1] += scriptEng.operands[5] + scriptEng.operands[6]; // spaceWidth + spacing
                             }
                             else {
                                 character += scriptEng.operands[0];
@@ -2972,18 +3102,20 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                             scriptEng.operands[0] += 26;
                             charID++;
                         }
+
                         while (titleCardText[charID] != 0) {
                             int character = titleCardText[charID];
                             if (character == ' ')
-                                character = 0;
+                                character = -1;
                             if (character == '-')
                                 character = 0;
-                            if (character > '/' && character < ':')
+                            if (character >= '0' && character <= '9')
                                 character -= 22;
                             if (character > '9' && character < 'f')
                                 character -= 'A';
+
                             if (character <= -1) {
-                                scriptEng.operands[1] = scriptEng.operands[1] + scriptEng.operands[5] + scriptEng.operands[6];
+                                scriptEng.operands[1] += scriptEng.operands[5] + scriptEng.operands[6]; // spaceWidth + spacing
                             }
                             else {
                                 character += scriptEng.operands[0];
@@ -2995,7 +3127,6 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                             charID++;
                         }
                         break;
-                    }
                 }
                 break;
             }
@@ -3460,8 +3591,7 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 break;
             case FUNC_LOADVIDEO:
                 opcodeSize = 0;
-                // PauseSound();
-                StopMusic();
+                PauseSound();
                 if (FindStringToken(scriptText, ".rsv", 1) <= -1)
                     PlayVideoFile(scriptText); // not an rsv
                 else
@@ -3597,9 +3727,10 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 SetLayerDeformation(scriptEng.operands[0], scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3], scriptEng.operands[4],
                                     scriptEng.operands[5]);
                 break;
-            case FUNC_CHECKTOUCHRECT:
-                opcodeSize            = 0;
-                scriptEng.checkResult = -1;
+            case FUNC_CHECKTOUCHRECT: opcodeSize = 0; scriptEng.checkResult = -1;
+#if !RETRO_USE_ORIGINAL_CODE
+                addDebugHitbox(H_TYPE_FINGER, NULL, scriptEng.operands[0], scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]);
+#endif
                 for (int f = 0; f < touches; ++f) {
                     if (touchDown[f] && touchX[f] > scriptEng.operands[0] && touchX[f] < scriptEng.operands[2] && touchY[f] > scriptEng.operands[1]
                         && touchY[f] < scriptEng.operands[3]) {
@@ -3633,13 +3764,13 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                 drawListEntries[scriptEng.operands[0]].listSize = 0;
                 break;
             case FUNC_ADDDRAWLISTENTITYREF: {
-                opcodeSize                                              = 0;
+                opcodeSize                                                                                           = 0;
                 drawListEntries[scriptEng.operands[0]].entityRefs[drawListEntries[scriptEng.operands[0]].listSize++] = scriptEng.operands[1];
                 break;
             }
             case FUNC_GETDRAWLISTENTITYREF: scriptEng.operands[0] = drawListEntries[scriptEng.operands[1]].entityRefs[scriptEng.operands[2]]; break;
             case FUNC_SETDRAWLISTENTITYREF:
-                opcodeSize                                      = 0;
+                opcodeSize                                                               = 0;
                 drawListEntries[scriptEng.operands[1]].entityRefs[scriptEng.operands[2]] = scriptEng.operands[0];
                 break;
             case FUNC_GET16X16TILEINFO: {
@@ -3766,8 +3897,11 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
 #if RETRO_USE_HAPTICS
             case FUNC_HAPTICEFFECT:
                 opcodeSize = 0;
-                // params: scriptEng.Operands[0],scriptEng.Operands[1],scriptEng.Operands[2],scriptEng.Operands[3]
-                QueueHapticEffect(scriptEng.operands[0]);
+                // params: scriptEng.operands[0], scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]
+                if (scriptEng.operands[0] != -1)
+                    QueueHapticEffect(scriptEng.operands[0]);
+                else
+                    PlayHaptics(scriptEng.operands[1], scriptEng.operands[2], scriptEng.operands[3]);
                 break;
 #endif
         }
@@ -4308,8 +4442,8 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_KEYPRESSSTART: keyPress.start = scriptEng.operands[i]; break;
                     case VAR_MENU1SELECTION: gameMenu[0].selection1 = scriptEng.operands[i]; break;
                     case VAR_MENU2SELECTION: gameMenu[1].selection1 = scriptEng.operands[i]; break;
-                    case VAR_TILELAYERXSIZE: stageLayouts[arrayVal].width = scriptEng.operands[i]; break;
-                    case VAR_TILELAYERYSIZE: stageLayouts[arrayVal].height = scriptEng.operands[i]; break;
+                    case VAR_TILELAYERXSIZE: stageLayouts[arrayVal].xsize = scriptEng.operands[i]; break;
+                    case VAR_TILELAYERYSIZE: stageLayouts[arrayVal].ysize = scriptEng.operands[i]; break;
                     case VAR_TILELAYERTYPE: stageLayouts[arrayVal].type = scriptEng.operands[i]; break;
                     case VAR_TILELAYERANGLE:
                         stageLayouts[arrayVal].angle = scriptEng.operands[i];
@@ -4364,13 +4498,25 @@ void ProcessScript(int scriptCodePtr, int jumpTablePtr, byte scriptSub)
                     case VAR_ENGINEONLINEACTIVE: break;
                     case VAR_ENGINEFRAMESKIPTIMER: Engine.frameSkipTimer = scriptEng.operands[i]; break;
                     case VAR_ENGINEFRAMESKIPSETTING: Engine.frameSkipSetting = scriptEng.operands[i]; break;
-                    case VAR_ENGINESFXVOLUME: break;
-                    case VAR_ENGINEBGMVOLUME: break;
+                    case VAR_ENGINESFXVOLUME:
+                        sfxVolume = scriptEng.operands[i];
+                        if (sfxVolume < 0)
+                            sfxVolume = 0;
+                        if (sfxVolume > MAX_VOLUME)
+                            sfxVolume = MAX_VOLUME;
+                        break;
+                    case VAR_ENGINEBGMVOLUME:
+                        bgmVolume = scriptEng.operands[i];
+                        if (bgmVolume < 0)
+                            bgmVolume = 0;
+                        if (bgmVolume > MAX_VOLUME)
+                            bgmVolume = MAX_VOLUME;
+                        break;
                     case VAR_ENGINEPLATFORMID: break;
                     case VAR_ENGINETRIALMODE: break;
                     case VAR_KEYPRESSANYSTART: break;
 #if RETRO_USE_HAPTICS
-                    case VAR_ENGINEHAPTICSENABLED: break;
+                    case VAR_ENGINEHAPTICSENABLED: Engine.hapticsEnabled = scriptEng.operands[i]; break;
 #endif
                 }
             }

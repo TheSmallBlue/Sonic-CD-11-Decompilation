@@ -8,7 +8,7 @@ FontCharacter fontCharacterList[FONTCHAR_COUNT];
 void LoadFontFile(const char *filePath)
 {
     byte fileBuffer = 0;
-    int cnt        = 0;
+    int cnt         = 0;
     FileInfo info;
     if (LoadFile(filePath, &info)) {
         while (!ReachedEndOfFile()) {
@@ -32,12 +32,12 @@ void LoadFontFile(const char *filePath)
             fontCharacterList[cnt].srcY += fileBuffer << 8;
 
             FileRead(&fileBuffer, 1);
-            fontCharacterList[cnt].width = fileBuffer;
+            fontCharacterList[cnt].width = fileBuffer + 1;
             FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].width += fileBuffer << 8;
 
             FileRead(&fileBuffer, 1);
-            fontCharacterList[cnt].height = fileBuffer;
+            fontCharacterList[cnt].height = fileBuffer + 1;
             FileRead(&fileBuffer, 1);
             fontCharacterList[cnt].height += fileBuffer << 8;
 
@@ -74,7 +74,7 @@ void LoadFontFile(const char *filePath)
                 fontCharacterList[cnt].xAdvance += fileBuffer << 8;
             }
 
-            //Unused
+            // Unused
             FileRead(&fileBuffer, 1);
             FileRead(&fileBuffer, 1);
             cnt++;
@@ -84,29 +84,30 @@ void LoadFontFile(const char *filePath)
 }
 void LoadTextFile(TextMenu *menu, const char *filePath, byte mapCode)
 {
-    bool flag = false;
+    bool finished = false;
     FileInfo info;
     byte fileBuffer = 0;
     if (LoadFile(filePath, &info)) {
-        menu->textDataPos                     = 0;
-        menu->rowCount                         = 0;
+        menu->textDataPos                = 0;
+        menu->rowCount                   = 0;
         menu->entryStart[menu->rowCount] = menu->textDataPos;
         menu->entrySize[menu->rowCount]  = 0;
+
         FileRead(&fileBuffer, 1);
         if (fileBuffer == 0xFF) {
             FileRead(&fileBuffer, 1);
-            while (!flag) {
-                ushort val = 0;
+            while (!finished) {
+                ushort character = 0;
                 FileRead(&fileBuffer, 1);
-                val = fileBuffer;
+                character = fileBuffer;
                 FileRead(&fileBuffer, 1);
-                val |= fileBuffer << 8;
+                character |= fileBuffer << 8;
 
-                if (val != '\n') {
-                    if (val == '\r') {
+                if (character != '\n') {
+                    if (character == '\r') {
                         menu->rowCount += 1;
                         if (menu->rowCount > 511) {
-                            flag = true;
+                            finished = true;
                         }
                         else {
                             menu->entryStart[menu->rowCount] = menu->textDataPos;
@@ -117,33 +118,33 @@ void LoadTextFile(TextMenu *menu, const char *filePath, byte mapCode)
                         if (mapCode) {
                             int i = 0;
                             while (i < 1024) {
-                                if (fontCharacterList[i].id == val) {
-                                    val = i;
-                                    i   = 1025;
+                                if (fontCharacterList[i].id == character) {
+                                    character = i;
+                                    i         = 1025;
                                 }
                                 else {
                                     ++i;
                                 }
                             }
                             if (i == 1024) {
-                                val = 0;
+                                character = 0;
                             }
                         }
-                        menu->textData[menu->textDataPos++] = val;
+                        menu->textData[menu->textDataPos++] = character;
                         menu->entrySize[menu->rowCount]++;
                     }
                 }
-                if (!flag) {
-                    flag = ReachedEndOfFile();
+                if (!finished) {
+                    finished = ReachedEndOfFile();
                     if (menu->textDataPos >= TEXTDATA_COUNT)
-                        flag = true;
+                        finished = true;
                 }
             }
         }
         else {
-            ushort val = fileBuffer;
-            if (val != '\n') {
-                if (val == '\r') {
+            ushort character = fileBuffer;
+            if (character != '\n') {
+                if (character == '\r') {
                     menu->rowCount++;
                     menu->entryStart[menu->rowCount] = menu->textDataPos;
                     menu->entrySize[menu->rowCount]  = 0;
@@ -152,31 +153,31 @@ void LoadTextFile(TextMenu *menu, const char *filePath, byte mapCode)
                     if (mapCode) {
                         int i = 0;
                         while (i < 1024) {
-                            if (fontCharacterList[i].id == val) {
-                                val = i;
-                                i   = 1025;
+                            if (fontCharacterList[i].id == character) {
+                                character = i;
+                                i         = 1025;
                             }
                             else {
                                 ++i;
                             }
                         }
                         if (i == 1024) {
-                            val = 0;
+                            character = 0;
                         }
                     }
-                    menu->textData[menu->textDataPos++] = val;
+                    menu->textData[menu->textDataPos++] = character;
                     menu->entrySize[menu->rowCount]++;
                 }
             }
 
-            while (!flag) {
+            while (!finished) {
                 FileRead(&fileBuffer, 1);
-                val = fileBuffer;
-                if (val != '\n') {
-                    if (val == '\r') {
+                character = fileBuffer;
+                if (character != '\n') {
+                    if (character == '\r') {
                         menu->rowCount++;
                         if (menu->rowCount > 511) {
-                            flag = true;
+                            finished = true;
                         }
                         else {
                             menu->entryStart[menu->rowCount] = menu->textDataPos;
@@ -187,25 +188,25 @@ void LoadTextFile(TextMenu *menu, const char *filePath, byte mapCode)
                         if (mapCode) {
                             int i = 0;
                             while (i < 1024) {
-                                if (fontCharacterList[i].id == val) {
-                                    val = i;
-                                    i   = 1025;
+                                if (fontCharacterList[i].id == character) {
+                                    character = i;
+                                    i         = 1025;
                                 }
                                 else {
                                     ++i;
                                 }
                             }
                             if (i == 1024)
-                                val = 0;
+                                character = 0;
                         }
-                        menu->textData[menu->textDataPos++] = val;
+                        menu->textData[menu->textDataPos++] = character;
                         menu->entrySize[menu->rowCount]++;
                     }
                 }
-                if (!flag) {
-                    flag = ReachedEndOfFile();
+                if (!finished) {
+                    finished = ReachedEndOfFile();
                     if (menu->textDataPos >= TEXTDATA_COUNT)
-                        flag = true;
+                        finished = true;
                 }
             }
         }
@@ -339,12 +340,12 @@ void LoadConfigListText(TextMenu *menu, int listNo)
         // Variables
         FileRead(&count, 1);
         for (int v = 0; v < count; ++v) {
-            //Var Name
+            // Var Name
             FileRead(&strLen, 1);
             FileRead(&strBuf, strLen);
             strBuf[strLen] = 0;
 
-            //Var Value
+            // Var Value
             FileRead(&fileBuffer, 1);
             FileRead(&fileBuffer, 1);
             FileRead(&fileBuffer, 1);
@@ -366,7 +367,7 @@ void LoadConfigListText(TextMenu *menu, int listNo)
             FileRead(&strBuf, strLen);
             strBuf[strLen] = '\0';
 
-            if (listNo == 0) //Player List
+            if (listNo == 0) // Player List
                 AddTextMenuEntry(menu, strBuf);
         }
 
@@ -375,29 +376,36 @@ void LoadConfigListText(TextMenu *menu, int listNo)
             byte stageCnt = 0;
             FileRead(&stageCnt, 1);
             for (int s = 0; s < stageCnt; ++s) {
-                //Stage Folder
-                FileRead(&strLen, 1);
-                FileRead(&strBuf, strLen);
-                strBuf[strLen] = 0;
-
-                //Stage ID
-                FileRead(&strLen, 1);
-                FileRead(&strBuf, strLen);
-                strBuf[strLen] = 0;
-
-                //Stage Name
+                // Stage Folder
                 FileRead(&strLen, 1);
                 FileRead(&strBuf, strLen);
                 strBuf[strLen] = '\0';
 
-                //IsHighlighted
+                // Stage ID
+                FileRead(&strLen, 1);
+                FileRead(&strBuf, strLen);
+                strBuf[strLen] = '\0';
+
+                // Stage Name
+                FileRead(&strLen, 1);
+                FileRead(&strBuf, strLen);
+                strBuf[strLen] = '\0';
+
+                // IsHighlighted
                 FileRead(&fileBuffer, 1);
                 if (listNo == c) {
-                    menu->entryHighlight[s] = fileBuffer;
                     AddTextMenuEntry(menu, strBuf);
+                    menu->entryHighlight[menu->rowCount - 1] = fileBuffer;
                 }
             }
         }
         CloseFile();
+
+#if RETRO_USE_MOD_LOADER
+        if (listNo == 0)
+            Engine.LoadXMLPlayers(menu);
+        else
+            Engine.LoadXMLStages(menu, listNo);
+#endif
     }
 }

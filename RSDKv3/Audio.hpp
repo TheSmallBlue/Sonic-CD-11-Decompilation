@@ -9,12 +9,16 @@
 #include "SDL.h"
 #endif
 
-#define TRACK_COUNT (0x10)
-#define SFX_COUNT (0x100)
+#define TRACK_COUNT   (0x10)
+#define SFX_COUNT     (0x100)
 #define CHANNEL_COUNT (0x4)
 #define SFXDATA_COUNT (0x400000)
 
 #define MAX_VOLUME (100)
+
+#define STREAMFILE_COUNT (2)
+
+#define MIX_BUFFER_SAMPLES (256)
 
 struct TrackInfo {
     char fileName[0x40];
@@ -22,7 +26,7 @@ struct TrackInfo {
     uint loopPoint;
 };
 
-struct MusicPlaybackInfo {
+struct StreamInfo {
     OggVorbis_File vorbisFile;
     int vorbBitstream;
 #if RETRO_USING_SDL1
@@ -31,8 +35,7 @@ struct MusicPlaybackInfo {
 #if RETRO_USING_SDL2
     SDL_AudioStream *stream;
 #endif
-    Sint16 *buffer;
-    FileInfo fileInfo;
+    Sint16 buffer[MIX_BUFFER_SAMPLES];
     bool trackLoop;
     uint loopPoint;
     bool loaded;
@@ -51,6 +54,12 @@ struct ChannelInfo {
     int sfxID;
     byte loopSFX;
     sbyte pan;
+};
+
+struct StreamFile {
+    byte *buffer;
+    int fileSize;
+    int filePos;
 };
 
 enum MusicStatuses {
@@ -78,7 +87,11 @@ extern SFXInfo sfxList[SFX_COUNT];
 
 extern ChannelInfo sfxChannels[CHANNEL_COUNT];
 
-extern MusicPlaybackInfo musInfo;
+extern int currentStreamIndex;
+extern StreamFile streamFile[STREAMFILE_COUNT];
+extern StreamInfo streamInfo[STREAMFILE_COUNT];
+extern StreamFile *streamFilePtr;
+extern StreamInfo *streamInfoPtr;
 
 #if RETRO_USING_SDL1 || RETRO_USING_SDL2
 extern SDL_AudioSpec audioDeviceFormat;
@@ -92,55 +105,39 @@ void ProcessMusicStream(void *data, Sint16 *stream, int len);
 void ProcessAudioPlayback(void *data, Uint8 *stream, int len);
 void ProcessAudioMixing(Sint32 *dst, const Sint16 *src, int len, int volume, sbyte pan);
 
-
 inline void freeMusInfo()
 {
-    if (musInfo.loaded) {
-        SDL_LockAudio();
+    SDL_LockAudio();
 
-        if (musInfo.buffer)
-            delete[] musInfo.buffer;
 #if RETRO_USING_SDL2
-        if (musInfo.stream)
-            SDL_FreeAudioStream(musInfo.stream);
+    if (streamInfo[currentStreamIndex].stream)
+        SDL_FreeAudioStream(streamInfo[currentStreamIndex].stream);
 #endif
-        ov_clear(&musInfo.vorbisFile);
-        musInfo.buffer       = nullptr;
+    ov_clear(&streamInfo[currentStreamIndex].vorbisFile);
 #if RETRO_USING_SDL2
-        musInfo.stream = nullptr;
+    streamInfo[currentStreamIndex].stream = nullptr;
 #endif
-        musInfo.trackLoop    = false;
-        musInfo.loopPoint    = 0;
-        musInfo.loaded       = false;
-        musicStatus          = MUSIC_STOPPED;
+    if (streamFile[currentStreamIndex].buffer)
+        free(streamFile[currentStreamIndex].buffer);
+    streamFile[currentStreamIndex].buffer = NULL;
 
-        SDL_UnlockAudio();
-    }
+    SDL_UnlockAudio();
 }
 #else
 void ProcessMusicStream() {}
 void ProcessAudioPlayback() {}
 void ProcessAudioMixing() {}
 
-inline void freeMusInfo()
-{
-    if (musInfo.loaded) {
-        SDL_LockAudio();
-
-        if (musInfo.buffer)
-            delete[] musInfo.buffer;
-        ov_clear(&musInfo.vorbisFile);
-        musInfo.buffer    = nullptr;
-        musInfo.trackLoop = false;
-        musInfo.loopPoint = 0;
-        musInfo.loaded    = false;
-        musicStatus       = MUSIC_STOPPED;
-
-        SDL_UnlockAudio();
-    }
-}
+inline void freeMusInfo() { ov_clear(&streamInfo[currentStreamIndex].vorbisFile); }
 #endif
 
+#if RETRO_USE_MOD_LOADER
+extern char globalSfxNames[SFX_COUNT][0x40];
+extern char stageSfxNames[SFX_COUNT][0x40];
+void SetSfxName(const char *sfxName, int sfxID, bool global);
+#endif
+
+void LoadMusic();
 void SetMusicTrack(char *filePath, byte trackID, bool loop, uint loopPoint);
 bool PlayMusic(int track);
 inline void StopMusic()
@@ -171,10 +168,13 @@ inline void SetMusicVolume(int volume)
     masterVolume = volume;
 }
 
-inline void PauseSound()
+inline bool PauseSound()
 {
-    if (musicStatus == MUSIC_PLAYING)
+    if (musicStatus == MUSIC_PLAYING) {
         musicStatus = MUSIC_PAUSED;
+        return true;
+    }
+    return false;
 }
 
 inline void ResumeSound()
@@ -182,7 +182,6 @@ inline void ResumeSound()
     if (musicStatus == MUSIC_PAUSED)
         musicStatus = MUSIC_PLAYING;
 }
-
 
 inline void StopAllSfx()
 {

@@ -1,6 +1,10 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#if RETRO_PLATFORM == RETRO_ANDROID
+#include <android/log.h>
+#endif
+
 inline void printLog(const char *msg, ...)
 {
     if (engineDebugMode) {
@@ -19,8 +23,11 @@ inline void printLog(const char *msg, ...)
             sprintf(pathBuffer, "%s/log.txt", getResourcesPath());
         else
             sprintf(pathBuffer, "log.txt");
+#elif RETRO_PLATFORM == RETRO_ANDROID
+        sprintf(pathBuffer, "%s/log.txt", gamePath);
+        __android_log_print(ANDROID_LOG_INFO, "RSDKv3", "%s", buffer);
 #else
-        sprintf(pathBuffer, BASE_PATH"log.txt");
+        sprintf(pathBuffer, BASE_PATH "log.txt");
 #endif
         FileIO *file = fOpen(pathBuffer, "a");
         if (file) {
@@ -43,4 +50,4 @@ void initDevMenu();
 void initErrorMessage();
 void processStageSelect();
 
-#endif //!DEBUG_H
+#endif //! DEBUG_H

@@ -9,12 +9,12 @@
 
 #define TILE_COUNT    (0x400)
 #define TILE_SIZE     (0x10)
-#define CHUNK_SIZE     (0x80)
+#define CHUNK_SIZE    (0x80)
 #define TILE_DATASIZE (TILE_SIZE * TILE_SIZE)
 #define TILESET_SIZE  (TILE_COUNT * TILE_DATASIZE)
 
-#define TILELAYER_CHUNK_W  (0x100)
-#define TILELAYER_CHUNK_H  (0x100)
+#define TILELAYER_CHUNK_W    (0x100)
+#define TILELAYER_CHUNK_H    (0x100)
 #define TILELAYER_CHUNK_MAX  (TILELAYER_CHUNK_W * TILELAYER_CHUNK_H)
 #define TILELAYER_SCROLL_MAX (TILELAYER_CHUNK_H * CHUNK_SIZE)
 
@@ -27,7 +27,7 @@ enum StageListNames {
     STAGELIST_REGULAR      = 1,
     STAGELIST_BONUS        = 2,
     STAGELIST_SPECIAL      = 3,
-    STAGELIST_MAX, //StageList size
+    STAGELIST_MAX, // StageList size
 };
 
 enum TileLayerTypes {
@@ -63,6 +63,14 @@ enum DeformationModes {
     DEFORM_BG_WATER = 3,
 };
 
+enum CameraStyles {
+    CAMERASTYLE_FOLLOW,
+    CAMERASTYLE_EXTENDED,
+    CAMERASTYLE_EXTENDED_OFFSET_L,
+    CAMERASTYLE_EXTENDED_OFFSET_R,
+    CAMERASTYLE_HLOCKED,
+};
+
 struct SceneInfo {
     char name[0x40];
     char folder[0x40];
@@ -75,7 +83,7 @@ struct CollisionMasks {
     sbyte lWallMasks[TILE_COUNT * TILE_SIZE];
     sbyte rWallMasks[TILE_COUNT * TILE_SIZE];
     sbyte roofMasks[TILE_COUNT * TILE_SIZE];
-    int angles[TILE_COUNT];
+    uint angles[TILE_COUNT];
     byte flags[TILE_COUNT];
 };
 
@@ -92,8 +100,8 @@ struct TileLayer {
     int deformationOffset;
     int deformationOffsetW;
     byte type;
-    byte width;
-    byte height;
+    byte xsize;
+    byte ysize;
 };
 
 struct LineScroll {
@@ -188,7 +196,7 @@ extern CollisionMasks collisionMasks[2];
 
 extern byte tilesetGFXData[TILESET_SIZE];
 
-extern ushort tile3DFloorBuffer[0x13334];
+extern ushort tile3DFloorBuffer[0x100 * 0x100];
 extern bool drawStageGFXHQ;
 
 void InitFirstStage();
@@ -231,10 +239,18 @@ inline void Init3DFloorBuffer(int layerID)
 
 inline void Copy16x16Tile(ushort dest, ushort src)
 {
-    byte *destPtr = &tilesetGFXData[TILELAYER_CHUNK_W * dest];
-    byte *srcPtr  = &tilesetGFXData[TILELAYER_CHUNK_W * src];
-    int cnt       = TILE_DATASIZE;
-    while (cnt--) *destPtr++ = *srcPtr++;
+    if (renderType == RENDER_SW) {
+        byte *destPtr = &tilesetGFXData[TILELAYER_CHUNK_W * dest];
+        byte *srcPtr  = &tilesetGFXData[TILELAYER_CHUNK_W * src];
+        int cnt       = TILE_DATASIZE;
+        while (cnt--) *destPtr++ = *srcPtr++;
+    }
+    else if (renderType == RENDER_HW) {
+        tileUVArray[4 * dest + 0] = tileUVArray[4 * src + 0];
+        tileUVArray[4 * dest + 1] = tileUVArray[4 * src + 1];
+        tileUVArray[4 * dest + 2] = tileUVArray[4 * src + 2];
+        tileUVArray[4 * dest + 3] = tileUVArray[4 * src + 3];
+    }
 }
 
 void SetLayerDeformation(int selectedDef, int waveLength, int waveType, int deformType, int YPos, int waveSize);
